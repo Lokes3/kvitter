@@ -1,41 +1,41 @@
 export type Kvitter = {
-  id: string;
   user: string;
-  timestamp: string;
+  created_at: string;
   message: string;
 };
 
 const BASE_URL: string =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:3000";
 
-const user1 = { id: "123", name: "Sparv", avatar: "" };
-const user2 = { id: "234", name: "Mes", avatar: "" };
-const user3 = { id: "456", name: "Sparven89", avatar: "" };
+const user1 = { name: "Sparv", avatar: "" };
+const user2 = { name: "Mes", avatar: "" };
+const user3 = { name: "Sparven89", avatar: "" };
 const fakeData = {
   kvitter: [
     {
-      id: "678",
       user: user1.name,
-      timestamp: "2021-08-03T10:32:06Z",
+      created_at: "2021-08-03T10:32:06Z",
       message: "Kvitt kvitt, kvitt-kvitt kvitt-kvitt.",
     },
     {
-      id: "567",
       user: user2.name,
-      timestamp: "2021-08-03T10:32:06Z",
+      created_at: "2021-08-03T10:32:06Z",
       message: "Kvitt kvitt!",
     },
     {
-      id: "456",
       user: user1.name,
-      timestamp: "2021-08-03T10:32:06Z",
+      created_at: "2021-08-03T10:32:06Z",
       message: "Kvitt kvitt!",
     },
     {
-      id: "123",
       user: user3.name,
-      timestamp: "2021-08-03T10:32:06Z",
+      created_at: "2021-08-03T10:32:06Z",
       message: "Kvitt kvitt, kvidevitt. Kvitt-kvitt kvitt?",
+    },
+    {
+      user: user3.name,
+      created_at: "2021-08-03T10:32:06Z",
+      message: "Kvitt kvitt, kvidevitt. Kvitt-kvitt kvitt? Kvitter kvitt tweet piip krax krax tweet!",
     },
   ],
 };
