@@ -5,8 +5,10 @@ import "./App.css";
 function App() {
   const [data, setData] = useState<Kvitter[] | null>(null);
   useEffect(() => {
-    fetchKvitter().then((data) => {
-      setData(data.kvitter);
+    fetchKvitter().then((data: any) => {
+      console.log("Fick data")
+      console.log(data)
+      setData(data);
     });
   }, []);
 
@@ -66,17 +68,18 @@ function ListView(props: { data: Kvitter[] | null }) {
   if (!data) {
     return null;
   }
+  console.log(data)
   return (
-    <div>
-      {data.map((item) => {
+    <ul>
+      {data.map((item, i) => {
         return (
-          <div key={item.id}>
-            <div>{item.user.name}</div>
-            <div>{item.content}</div>
-          </div>
+          <li key={i}>
+            <div>{item.user}</div>
+            <div>{item.message}</div>
+          </li>
         );
       })}
-    </div>
+    </ul>
   );
 }
 
