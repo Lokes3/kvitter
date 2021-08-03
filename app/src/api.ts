@@ -57,7 +57,7 @@ export async function fetchKvitter(): Promise<Kvitter[]> {
     .catch((e) => {
       console.log(e);
       console.log("Returnerar fejkdata");
-      return fakeData;
+      return fakeData.kvitter;
     });
 }
 
