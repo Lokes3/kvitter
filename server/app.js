@@ -21,14 +21,41 @@ app.get('/kvitter', async function (req, res) {
 app.post("/kvitter", async function (req, res) {
   const msg = req.body
   console.log(msg)
-  const kvitt = {
+  const kvitt = kvitterfy({
     message: msg.message,
     user: msg.user,
     created_at: new Date()
-  }
+  });
   await db.storeKvitter(kvitt)
   res.json(kvitt)
 })
+
+kvitters = [
+    "kvitt",
+    "tuut",
+    "krax"
+]
+
+birds = [
+    "Blåmesen",
+    "Måsen",
+    "Kråkan",
+]
+
+function kvitterfy(kvitt) {
+  const message = kvitt.message.split(" ")
+      .map(word => word.match(/[AaEeIiOoUuÅåÄäÖöYy]/g).length)
+      .map(count => kvitters[count % (kvitters.length)])
+      .join(" ")
+  const userHash = kvitt.user.split("").reduce((sum, c) => sum + c.charCodeAt(0), 0)
+  const user = birds[userHash % (birds.length)]
+  return {
+    ...kvitt,
+    message,
+    user,
+  }
+
+}
 
 // error handler
 app.use(function(err, req, res, next) {
