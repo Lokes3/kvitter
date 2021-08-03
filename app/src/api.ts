@@ -12,8 +12,8 @@ export type Kvitter = {
 };
 
 export async function fetchKvitter(): Promise<{ kvitter: Kvitter[] }> {
-  const url: string =
-    process.env.KVITTER_ENDPOINT || "http://localhost:3000/kvitter/";
+  let url: string = process.env.API_BASE_URL || "http://localhost:3000";
+  url = url + "/kvitter/";
   console.log(url);
   fetch(url).then((r) => {
     console.log(r);
