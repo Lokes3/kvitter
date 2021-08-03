@@ -11,9 +11,11 @@ export type Kvitter = {
   content: string;
 };
 
+const BASE_URL: string =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:3000";
+
 export async function fetchKvitter(): Promise<{ kvitter: Kvitter[] }> {
-  let url: string = process.env.API_BASE_URL || "http://localhost:3000";
-  url = url + "/kvitter/";
+  const url = BASE_URL + "/kvitter/";
   console.log(url);
   fetch(url).then((r) => {
     console.log(r);
@@ -54,9 +56,7 @@ export async function fetchKvitter(): Promise<{ kvitter: Kvitter[] }> {
 }
 
 export async function postKvitt(data: any) {
-  let url: string = process.env.API_BASE_URL || "http://localhost:3000";
-  url = url + "/kvitter/";
-
+  const url = BASE_URL + "/kvitter/";
   console.log(data);
   return fetch(url, { method: "POST", body: data }).then((r) => {
     console.log(r);
