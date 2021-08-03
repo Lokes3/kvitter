@@ -7,8 +7,6 @@ function App() {
   const [data, setData] = useState<Kvitter[] | null>(null);
   useEffect(() => {
     fetchKvitter().then((data: any) => {
-      console.log("Fick data");
-      console.log(data);
       setData(data);
     });
   }, []);
@@ -41,29 +39,35 @@ function App() {
             }
           }}
         >
-          <textarea
-            className="w-full"
-            name="kvitt"
-            onInput={(evt) => {
-              setContent(evt.currentTarget.value);
-            }}
-          />
-          <input
-            type="text"
-            name="name"
-            onInput={(evt) => {
-              setName(evt.currentTarget.value);
-            }}
-          />
-          <div>
-            <button className="w-full" type="submit">
-              Skicka
-            </button>
+          <div className="bg-blue-100 p-2 flex flex-col">
+            <input
+              type="text"
+              name="name"
+              className="mr-auto mb-1 rounded p-1"
+              placeholder="Namn"
+              onInput={(evt) => {
+                setName(evt.currentTarget.value);
+              }}
+            />
+            <textarea
+              className="w-full rounded p-1"
+              name="kvitt"
+              placeholder="Vad händer?"
+              onInput={(evt) => {
+                setContent(evt.currentTarget.value);
+              }}
+            />
+            <div className="flex items-center mt-2">
+              <div className="ml-auto text-sm font-light text-gray-500 mr-2">140</div>
+              <button className="bg-blue-400 rounded p-2 text-white" type="submit">
+                Kvittra
+              </button>
+            </div>
           </div>
         </form>
         {error && <div>Något gick fel!</div>}
 
-        <div className="feed">
+        <div>
           <ListView data={data} />
         </div>
       </div>
@@ -77,18 +81,24 @@ function ListView(props: { data: Kvitter[] | null }) {
   if (!data) {
     return null;
   }
-  console.log(data);
+
   return (
-    <ul>
+    <div className="text-left">
       {data.map((item, i) => {
         return (
-          <li key={i}>
-            <div>{item.user}</div>
+          <div className="p-2 mb-2 border-b-2 border-opacity-75 flex" key={i}>
+            <div className="w-12">img</div>
+            <div className="flex-grow">
+            <div className="flex text-sm">
+              <div className="font-bold">{item.user}</div>
+            <div className="font-thin ml-auto">3d</div>
+            </div>
             <div>{item.message}</div>
-          </li>
+            </div>
+          </div>
         );
       })}
-    </ul>
+    </div>
   );
 }
 
