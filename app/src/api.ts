@@ -1,18 +1,21 @@
-type User = {
+export type User = {
   id: string;
   name: string;
   avatar: string;
 };
 
-type Kvitter = {
+export type Kvitter = {
   id: string;
   user: User;
   timestamp: string;
   content: string;
 };
 
-export function fetchKvitter(): { kvitter: Kvitter[] } {
-  fetch("http://localhost:3000/kvitter/").then((r) => {
+export async function fetchKvitter(): Promise<{ kvitter: Kvitter[] }> {
+  const url: string =
+    process.env.KVITTER_ENDPOINT || "http://localhost:3000/kvitter/";
+  console.log(url);
+  fetch(url).then((r) => {
     console.log(r);
   });
   console.log("Hämtar kvitter 🎶");
@@ -20,7 +23,7 @@ export function fetchKvitter(): { kvitter: Kvitter[] } {
   const user1 = { id: "123", name: "Sparv", avatar: "" };
   const user2 = { id: "234", name: "Mes", avatar: "" };
   const user3 = { id: "456", name: "Sparven89", avatar: "" };
-  return {
+  return Promise.resolve({
     kvitter: [
       {
         id: "678",
@@ -47,5 +50,5 @@ export function fetchKvitter(): { kvitter: Kvitter[] } {
         content: "Kvitt kvitt, kvidevitt. Kvitt-kvitt kvitt?",
       },
     ],
-  };
+  });
 }
