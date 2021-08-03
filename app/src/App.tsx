@@ -19,14 +19,27 @@ function App() {
       </form>
 
       <div className="feed">
-        Kvitt kvitt kvitt kvivitt kvitt kvitt! D: - Sparv
-        <br />
-        Kvitt kvikvitt kvivivitt, kvitt kvitt ^^ - Blåmes
-        <br />
-        Kvitt 🐥- Höna
-        <br />
-        KRAAAAAAA! - Skata
+        <ListView data={data} />
       </div>
+    </div>
+  );
+}
+
+function ListView(props: { data: Kvitter[] | null }) {
+  const { data } = props;
+  if (!data) {
+    return null;
+  }
+  return (
+    <div>
+      {data.map((item) => {
+        return (
+          <div>
+            <div>{item.user.name}</div>
+            <div>{item.content}</div>
+          </div>
+        );
+      })}
     </div>
   );
 }
