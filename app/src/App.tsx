@@ -87,7 +87,7 @@ function App() {
             />
             <div className="flex ml-auto items-center mt-2 space-x-2">
               <button
-                className="rounded p-2 mt-1 text-white"
+                className="rounded-md p-2 px-4 mt-1 text-white"
                 style={{ backgroundColor: "#409dd8" }}
                 type="submit"
               >
