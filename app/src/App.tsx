@@ -1,4 +1,5 @@
 import React from 'react';
+import { fetchKvitter } from './api'
 import logo from './logo.svg';
 import './App.css';
 
