@@ -9,27 +9,50 @@ function App() {
       setData(data.kvitter);
     });
   }, []);
-  console.log(data);
+
+  const [error, setError] = useState(false);
+  const [name, setName] = useState("");
+  const [content, setContent] = useState("");
 
   return (
     <div className="App container">
       <form
         action="/"
         method="POST"
-        onSubmit={(evt) => {
-          evt.preventDefault()
-          console.log(evt);
-          const data = new FormData(evt.currentTarget)
-          console.log(data)
-          postKvitt(data)
+        onSubmit={async (evt) => {
+          evt.preventDefault();
+          const data = new FormData();
+          data.append("name", name);
+          data.append("content", content);
+          try {
+            await postKvitt(data);
+            window.location.reload();
+          } catch (e) {
+            setError(true);
+          }
         }}
       >
-        <textarea className="w-full" name="kvitt" />
-        <input type="text" name="name" />
+        <textarea
+          className="w-full"
+          name="kvitt"
+          onInput={(evt) => {
+            setContent(evt.currentTarget.value);
+          }}
+        />
+        <input
+          type="text"
+          name="name"
+          onInput={(evt) => {
+            setName(evt.currentTarget.value);
+          }}
+        />
         <div>
-          <button className="w-full" type="submit">Skicka</button>
+          <button className="w-full" type="submit">
+            Skicka
+          </button>
         </div>
       </form>
+      {error && <div>Något gick fel!</div>}
 
       <div className="feed">
         <ListView data={data} />
