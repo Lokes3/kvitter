@@ -52,3 +52,12 @@ export async function fetchKvitter(): Promise<{ kvitter: Kvitter[] }> {
     ],
   });
 }
+
+export async function postKvitt(data: any) {
+  let url: string = process.env.API_BASE_URL || "http://localhost:3000";
+  url = url + "/kvitter/";
+
+  fetch(url, { method: "POST", body: data }).then((r) => {
+    console.log(r);
+  });
+}

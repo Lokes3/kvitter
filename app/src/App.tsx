@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchKvitter, Kvitter } from "./api";
+import { postKvitt, fetchKvitter, Kvitter } from "./api";
 import "./App.css";
 
 function App() {
@@ -12,10 +12,23 @@ function App() {
   console.log(data);
 
   return (
-    <div className="App">
-      <form action="/">
-        <label>Kvitt: </label>
-        <input type="text" id="kvitt" name="kvitt" />
+    <div className="App container">
+      <form
+        action="/"
+        method="POST"
+        onSubmit={(evt) => {
+          evt.preventDefault()
+          console.log(evt);
+          const data = new FormData(evt.currentTarget)
+          console.log(data)
+          postKvitt(data)
+        }}
+      >
+        <textarea className="w-full" name="kvitt" />
+        <input type="text" name="name" />
+        <div>
+          <button className="w-full" type="submit">Skicka</button>
+        </div>
       </form>
 
       <div className="feed">
@@ -34,7 +47,7 @@ function ListView(props: { data: Kvitter[] | null }) {
     <div>
       {data.map((item) => {
         return (
-          <div>
+          <div key={item.id}>
             <div>{item.user.name}</div>
             <div>{item.content}</div>
           </div>
