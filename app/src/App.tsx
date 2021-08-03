@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { postKvitt, fetchKvitter, Kvitter } from "./api";
 import "./App.css";
+import logo from "./images/kvitter-logo.png";
 
 function App() {
   const [data, setData] = useState<Kvitter[] | null>(null);
   useEffect(() => {
     fetchKvitter().then((data: any) => {
-      console.log("Fick data")
-      console.log(data)
+      console.log("Fick data");
+      console.log(data);
       setData(data);
     });
   }, []);
@@ -17,48 +18,56 @@ function App() {
   const [content, setContent] = useState("");
 
   return (
-    <div className="App container">
-      <form
-        action="/"
-        method="POST"
-        onSubmit={async (evt) => {
-          evt.preventDefault();
-          try {
-            await postKvitt({
-              user: name,
-              message: content,
-            });
-            window.location.reload();
-          } catch (e) {
-            setError(true);
-          }
-        }}
-      >
-        <textarea
-          className="w-full"
-          name="kvitt"
-          onInput={(evt) => {
-            setContent(evt.currentTarget.value);
-          }}
-        />
-        <input
-          type="text"
-          name="name"
-          onInput={(evt) => {
-            setName(evt.currentTarget.value);
-          }}
-        />
-        <div>
-          <button className="w-full" type="submit">
-            Skicka
-          </button>
+    <div className="App">
+      <header>
+        <div className="logo">
+          <img src={logo} alt="Definitely not like Twitter" />
         </div>
-      </form>
-      {error && <div>Något gick fel!</div>}
+      </header>
+      <div className="body">
+        <form
+          action="/"
+          method="POST"
+          onSubmit={async (evt) => {
+            evt.preventDefault();
+            try {
+              await postKvitt({
+                user: name,
+                message: content,
+              });
+              window.location.reload();
+            } catch (e) {
+              setError(true);
+            }
+          }}
+        >
+          <textarea
+            className="w-full"
+            name="kvitt"
+            onInput={(evt) => {
+              setContent(evt.currentTarget.value);
+            }}
+          />
+          <input
+            type="text"
+            name="name"
+            onInput={(evt) => {
+              setName(evt.currentTarget.value);
+            }}
+          />
+          <div>
+            <button className="w-full" type="submit">
+              Skicka
+            </button>
+          </div>
+        </form>
+        {error && <div>Något gick fel!</div>}
 
-      <div className="feed">
-        <ListView data={data} />
+        <div className="feed">
+          <ListView data={data} />
+        </div>
       </div>
+      <footer></footer>
     </div>
   );
 }
@@ -68,7 +77,7 @@ function ListView(props: { data: Kvitter[] | null }) {
   if (!data) {
     return null;
   }
-  console.log(data)
+  console.log(data);
   return (
     <ul>
       {data.map((item, i) => {
