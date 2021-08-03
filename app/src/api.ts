@@ -1,4 +1,3 @@
-
 export type Kvitter = {
   id: string;
   user: string;
@@ -51,7 +50,7 @@ export async function fetchKvitter(): Promise<Kvitter[]> {
       return r.json();
     })
     .then((d) => {
-      console.log("Decodade")
+      console.log("Decodade");
       console.log(d);
       return d.kvitter;
     })
@@ -65,7 +64,13 @@ export async function fetchKvitter(): Promise<Kvitter[]> {
 export async function postKvitt(data: any) {
   const url = BASE_URL + "/kvitter/";
   console.log(data);
-  return fetch(url, { method: "POST", body: data }).then((r) => {
+  return fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data), // body data type must match "Content-Type" header
+  }).then((r) => {
     console.log(r);
   });
 }

@@ -23,11 +23,11 @@ function App() {
         method="POST"
         onSubmit={async (evt) => {
           evt.preventDefault();
-          const data = new FormData();
-          data.append("name", name);
-          data.append("content", content);
           try {
-            await postKvitt(data);
+            await postKvitt({
+              user: name,
+              message: content,
+            });
             window.location.reload();
           } catch (e) {
             setError(true);
