@@ -43,34 +43,25 @@ const fakeData = {
 export async function fetchKvitter(): Promise<Kvitter[]> {
   const url = BASE_URL + "/kvitter/";
   console.log("Hämtar kvitter 🎶");
-  console.log(url);
   return fetch(url)
     .then((r) => {
-      console.log(r);
       return r.json();
     })
     .then((d) => {
-      console.log("Decodade");
-      console.log(d);
       return d.kvitter;
     })
     .catch((e) => {
-      console.log(e);
-      console.log("Returnerar fejkdata");
       return fakeData.kvitter;
     });
 }
 
 export async function postKvitt(data: any) {
   const url = BASE_URL + "/kvitter/";
-  console.log(data);
   return fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data), // body data type must match "Content-Type" header
-  }).then((r) => {
-    console.log(r);
   });
 }
