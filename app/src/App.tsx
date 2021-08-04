@@ -7,26 +7,40 @@ import React, { useEffect, useState } from "react";
 import { fetchKvitter, Kvitter, postKvitt } from "./api";
 import logo from "./images/kvitter-logo.png";
 import { classNames, pick } from "./utils";
+import { useInterval } from "./hooks";
 
 dayjs.extend(relativeTime);
 
 export default function App() {
+  const [isFetching, setIsFetching] = useState(false);
   const [data, setData] = useState<Kvitter[] | null>(null);
-  useEffect(() => {
-    fetchKvitter().then((data: any) => {
-      setData(data);
-    });
-  }, []);
-
   const [error, setError] = useState(false);
   const [name, setName] = useState("");
-  const [content, setContent] = useState("");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useInterval(() => {
+    if (!isFetching) {
+      fetchData();
+    }
+  }, 15000);
+
+  function fetchData() {
+    setIsFetching(true);
+    fetchKvitter().then((data: any) => {
+      setIsFetching(false);
+      setData(data);
+    });
+  }
 
   async function submit() {
     try {
       await postKvitt({
         user: name,
-        message: content,
+        message: message,
       });
       window.location.reload();
     } catch (e) {
@@ -65,7 +79,7 @@ export default function App() {
               placeholder="Vad händer?"
               maxLength={140}
               onKeyDown={onEnterSubmit}
-              onInput={onInputSet(setContent)}
+              onInput={onInputSet(setMessage)}
             />
             <input
               required
