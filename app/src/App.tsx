@@ -1,12 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { postKvitt, fetchKvitter, Kvitter } from "./api";
 import "./App.css";
-import logo from "./images/kvitter-logo.png";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import React, { useEffect, useState } from "react";
+
+import { fetchKvitter, Kvitter, postKvitt } from "./api";
+import logo from "./images/kvitter-logo.png";
+import { classNames, pick } from "./utils";
+
 dayjs.extend(relativeTime);
 
-function App() {
+export default function App() {
   const [data, setData] = useState<Kvitter[] | null>(null);
   useEffect(() => {
     fetchKvitter().then((data: any) => {
@@ -17,7 +21,6 @@ function App() {
   const [error, setError] = useState(false);
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
-  const [characterCounter, setCharacterCounter] = useState(140);
 
   async function submit() {
     try {
@@ -30,6 +33,13 @@ function App() {
       setError(true);
     }
   }
+
+  const onInputSet = (func: any) => (evt: any) => func(evt.currentTarget.value);
+  const onEnterSubmit = (evt: any) => {
+    if (evt.key === "Enter" && (evt.ctrlKey || evt.metaKey)) {
+      submit();
+    }
+  };
 
   return (
     <div className="App">
@@ -48,42 +58,23 @@ function App() {
           }}
         >
           <div className="bg-blue-100 p-4 flex flex-col space-y-2">
-            <div className="relative">
-              <textarea
-                required
-                className="w-full rounded p-2"
-                name="kvitt"
-                placeholder="Vad händer?"
-                maxLength={140}
-                onKeyDown={(evt) => {
-                  if (evt.key === "Enter" && (evt.ctrlKey || evt.metaKey)) {
-                    submit();
-                  }
-                }}
-                onInput={(evt) => {
-                  const value = evt.currentTarget.value;
-                  setContent(value);
-                  setCharacterCounter(140 - value.length);
-                }}
-              />
-              <div className="absolute right-2 bottom-3 text-sm font-light text-gray-500">
-                {characterCounter}
-              </div>
-            </div>
+            <MaxLengthTextarea
+              required
+              className="w-full rounded p-2"
+              name="kvitt"
+              placeholder="Vad händer?"
+              maxLength={140}
+              onKeyDown={onEnterSubmit}
+              onInput={onInputSet(setContent)}
+            />
             <input
               required
               type="text"
               name="name"
               className="mb-1 rounded p-2"
               placeholder="Namn"
-              onInput={(evt) => {
-                setName(evt.currentTarget.value);
-              }}
-              onKeyDown={(evt) => {
-                if (evt.key === "Enter" && (evt.ctrlKey || evt.metaKey)) {
-                  submit();
-                }
-              }}
+              onKeyDown={onEnterSubmit}
+              onInput={onInputSet(setName)}
             />
             <div className="flex ml-auto items-center mt-2 space-x-2">
               <button
@@ -94,9 +85,9 @@ function App() {
                 Kvittra
               </button>
             </div>
+            {error && <div>Något gick fel!</div>}
           </div>
         </form>
-        {error && <div>Något gick fel!</div>}
 
         <div>
           <ListView data={data} />
@@ -107,19 +98,42 @@ function App() {
   );
 }
 
+function MaxLengthTextarea(props: any) {
+  const maxLength = props.maxLength;
+  const [counter, setCounter] = useState(maxLength);
+  return (
+    <div className="relative">
+      <textarea
+        {...props}
+        maxLength={maxLength}
+        onInput={(evt) => {
+          props.onInput?.(evt);
+          setCounter(maxLength - evt.currentTarget.value.length);
+        }}
+      />
+      <div
+        className={classNames(
+          "absolute right-2 bottom-3 text-sm font-light text-gray-500",
+          counter <= 10 && "text-red-500 font-bold",
+          10 < counter && counter <= 20 && "text-yellow-500",
+        )}
+      >
+        {counter}
+      </div>
+    </div>
+  );
+}
+
 const getGradientString = (user: string) => {
-  const userNumber = user
-    .split("")
-    .reduce((sum, c) => sum + c.charCodeAt(0), 0);
+  const n = user.split("").reduce((sum, c) => sum + c.charCodeAt(0), 0);
   const colors = ["blue", "red", "yellow", "purple", "pink"];
-  const intensity = ["500"];
+  const intensity = ["500", "700"];
   const direction = ["tr", "tl", "bl", "br"];
 
-  return `bg-gradient-to-${direction[userNumber % direction.length]} from-${
-    colors[userNumber % colors.length]
-  }-${intensity[userNumber % intensity.length]} to-${
-    colors[(userNumber % 7) % colors.length]
-  }-${intensity[(userNumber % 7) % intensity.length]}`;
+  const gradient = `bg-gradient-to-${pick(direction, n)}`;
+  const cFrom = `from-${pick(colors, n)}-${pick(intensity, n)}`;
+  const cTo = `to-${pick(colors, n % 7)}-${pick(intensity, n % 7)}`;
+  return `${gradient} ${cFrom} ${cTo}`;
 };
 
 function ListView(props: { data: Kvitter[] | null }) {
@@ -135,10 +149,10 @@ function ListView(props: { data: Kvitter[] | null }) {
           <div className="p-2 mb-2 border-b-2 border-opacity-75 flex" key={i}>
             <div className="w-12 flex-shrink-0">
               <div
-                className={
-                  "rounded-full w-10 h-10 flex items-center justify-center text-white " +
-                  getGradientString(item.user)
-                }
+                className={classNames(
+                  "rounded-full w-10 h-10 flex items-center justify-center text-white",
+                  getGradientString(item.user),
+                )}
               >
                 {item.user[0]}
               </div>
@@ -158,5 +172,3 @@ function ListView(props: { data: Kvitter[] | null }) {
     </div>
   );
 }
-
-export default App;
